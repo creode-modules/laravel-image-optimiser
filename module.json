@@ -1,0 +1,11 @@
+{
+    "name": "ImageOptimiser",
+    "alias": "imageoptimiser",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\ImageOptimiser\\app\\Providers\\ImageOptimiserServiceProvider"
+    ],
+    "files": []
+}

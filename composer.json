@@ -1,0 +1,33 @@
+{
+    "name": "creode/laravel-image-optimiser",
+    "description": "",
+    "authors": [
+        {
+            "name": "Creode",
+            "email": "contact@creode.co.uk"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\ImageOptimiser\\app\\Providers\\ImageOptimiserServiceProvider"
+            ],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\ImageOptimiser\\": "",
+            "Modules\\ImageOptimiser\\App\\": "app/",
+            "Modules\\ImageOptimiser\\Database\\Factories\\": "database/factories/",
+            "Modules\\ImageOptimiser\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\ImageOptimiser\\Tests\\": "tests/"
+        }
+    }
+}
