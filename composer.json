@@ -29,5 +29,9 @@
         "psr-4": {
             "Modules\\ImageOptimiser\\Tests\\": "tests/"
         }
+    },
+    "require": {
+        "intervention/image": "^2.7",
+        "intervention/imagecache": "^2.6"
     }
 }

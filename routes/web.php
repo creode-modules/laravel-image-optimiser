@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\ImageOptimiser\app\Http\Controllers\ImageOptimiserController;
+use Modules\ImageOptimiser\app\Http\Controllers\OptimiseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,5 +15,5 @@ use Modules\ImageOptimiser\app\Http\Controllers\ImageOptimiserController;
 */
 
 Route::group([], function () {
-    Route::resource('imageoptimiser', ImageOptimiserController::class)->names('imageoptimiser');
+    Route::get('image/{preset}', [OptimiseController::class, 'optimise'])->name('optimise-image');
 });

@@ -27,8 +27,6 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map(): void
     {
-        $this->mapApiRoutes();
-
         $this->mapWebRoutes();
     }
 
@@ -42,18 +40,5 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware('web')
             ->namespace($this->moduleNamespace)
             ->group(module_path('ImageOptimiser', '/routes/web.php'));
-    }
-
-    /**
-     * Define the "api" routes for the application.
-     *
-     * These routes are typically stateless.
-     */
-    protected function mapApiRoutes(): void
-    {
-        Route::prefix('api')
-            ->middleware('api')
-            ->namespace($this->moduleNamespace)
-            ->group(module_path('ImageOptimiser', '/routes/api.php'));
     }
 }
