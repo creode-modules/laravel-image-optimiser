@@ -39,6 +39,6 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::middleware('web')
             ->namespace($this->moduleNamespace)
-            ->group(module_path('ImageOptimiser', '/routes/web.php'));
+            ->group(__DIR__ . '/../../routes/web.php');
     }
 }
