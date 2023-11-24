@@ -1,6 +1,6 @@
 <?php
 
-const ONE_YEAR = 60 * 24 * 365;
+$oneYear = 60 * 24 * 365;
 
 return [
     /*
@@ -65,5 +65,5 @@ return [
     | How long the optimised images should be cached for (in minutes).
     |
     */
-    'cache_lifetime' => ONE_YEAR,
+    'cache_lifetime' => $oneYear,
 ];
