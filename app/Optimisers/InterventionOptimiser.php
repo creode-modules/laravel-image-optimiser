@@ -58,8 +58,11 @@ class InterventionOptimiser implements OptimiserInterface
         // Make the image from the url.
         $image->make($imageLocation);
         if ($preset->height || $preset->width) {
-            $image->resize($preset->width, $preset->height, function ($constraint) {
+            $image->resize($preset->width, $preset->height, function ($constraint) use ($preset) {
                 $constraint->aspectRatio();
+                if (!$preset->allow_upscaling) {
+                    $constraint->upsize();
+                }
             });
         }
     }

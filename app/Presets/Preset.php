@@ -10,11 +10,13 @@ class Preset
      * @param integer|null $width
      * @param integer|null $height
      * @param integer|null $quality
+     * @param bool|null $allow_upscaling
      */
     public function __construct(
         public readonly ?int $width,
         public readonly ?int $height,
-        public readonly ?int $quality
+        public readonly ?int $quality,
+        public readonly ?bool $allow_upscaling = false
     )
     {
     }
@@ -29,7 +31,8 @@ class Preset
         return new self(
             $presetConfig['width'] ?? null,
             $presetConfig['height'] ?? null,
-            $presetConfig['quality'] ?? null
+            $presetConfig['quality'] ?? null,
+            $presetConfig['allow_upscaling'] ?? false,
         );
     }
 }
