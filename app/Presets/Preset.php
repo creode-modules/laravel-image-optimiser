@@ -2,7 +2,9 @@
 
 namespace Modules\ImageOptimiser\app\Presets;
 
-class Preset
+use Illuminate\Contracts\Support\Arrayable;
+
+class Preset implements Arrayable
 {
     /**
      * Constructor for Preset class.
@@ -19,6 +21,16 @@ class Preset
         public readonly ?bool $allow_upscaling = false
     )
     {
+    }
+
+    /**
+     * Converts a preset to an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return (array) $this;
     }
 
     /**
