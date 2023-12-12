@@ -31,7 +31,6 @@
         }
     },
     "require": {
-        "intervention/image": "^2.7",
-        "intervention/imagecache": "^2.6"
+        "intervention/image": "^3.0"
     }
 }

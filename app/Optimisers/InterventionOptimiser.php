@@ -3,7 +3,9 @@
 namespace Modules\ImageOptimiser\app\Optimisers;
 
 use Illuminate\Http\Response;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\EncodedImage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Interfaces\ImageInterface;
 use Modules\ImageOptimiser\app\Presets\Preset;
 use Modules\ImageOptimiser\app\Concerns\OptimiserInterface;
 
@@ -34,37 +36,9 @@ class InterventionOptimiser implements OptimiserInterface
     public function optimise(string $imageLocation, Preset $preset): Response
     {
         $imageLocation = $this->processLocation($imageLocation);
+        $image = $this->getOptimisedImage($imageLocation, $preset);
 
-        return Image::cache(
-            function ($image) use ($imageLocation, $preset) {
-                $this->generateImage($image, $imageLocation, $preset);
-            },
-            config('image-optimiser.cache_lifetime'),
-            true
-        )->response('jpg', $preset->quality);
-    }
-
-    /**
-     * Main function for generating an image with Intervention.
-     *
-     * @param mixed $image
-     * @param string $imageLocation
-     * @param Preset $preset
-     *
-     * @return void
-     */
-    private function generateImage(&$image, string $imageLocation, Preset $preset): void
-    {
-        // Make the image from the url.
-        $image->make($imageLocation);
-        if ($preset->height || $preset->width) {
-            $image->resize($preset->width, $preset->height, function ($constraint) use ($preset) {
-                $constraint->aspectRatio();
-                if (!$preset->allow_upscaling) {
-                    $constraint->upsize();
-                }
-            });
-        }
+        return (new \Illuminate\Http\Response($image))->header('Content-Type', 'image/webp');
     }
 
     /**
@@ -82,5 +56,71 @@ class InterventionOptimiser implements OptimiserInterface
         }
 
         return $imageLocation;
+    }
+
+    /**
+     * Gets the optimised image from the cache or generates it.
+     *
+     * @param string $imageLocation
+     * @param Preset $preset
+     *
+     * @return EncodedImage
+     */
+    private function getOptimisedImage(string $imageLocation, Preset $preset): EncodedImage
+    {
+        $cache = resolve('image-optimiser-cache');
+        $cacheKey = 'image-optimiser-' . md5($imageLocation . implode(',', $preset->toArray()));
+
+        // If the image is not in the cache, generate it.
+        if (!$image = $cache::get($cacheKey)) {
+            $processedImage = $this->processImage($imageLocation, $preset);
+            $cache::put($cacheKey, $processedImage, config('image-optimiser.cache_lifetime'));
+            $image = $processedImage;
+        }
+
+        return $image;
+    }
+
+    /**
+     * Main function for generating an image with Intervention.
+     *
+     * @param string $imageLocation
+     * @param Preset $preset
+     *
+     * @return EncodedImage
+     */
+    private function processImage(string $imageLocation, Preset $preset): EncodedImage
+    {
+        $imageManager = new ImageManager(resolve('image-optimiser-driver'));
+
+        // Loads the image from the location.
+        $image = $this->loadImage($imageManager, $imageLocation);
+
+        // Scales the image if required.
+        if ($preset->height || $preset->width) {
+            $image = $image
+                ->scale($preset->width, $preset->height);
+        }
+
+        // Converts the image to webp.
+        return $image->toWebp($preset->quality);
+    }
+
+    /**
+     * Loads the image from the location.
+     *
+     * @param ImageManager $imageManager
+     * @param string $imageLocation
+     *
+     * @return ImageInterface
+     */
+    private function loadImage(ImageManager $imageManager, string $imageLocation): ImageInterface
+    {
+        // We need to determine if the image is a url or a local file due to how Intervention handles them.
+        if (filter_var($imageLocation, FILTER_VALIDATE_URL)) {
+            return $imageManager->read(file_get_contents($imageLocation));
+        }
+
+        return $imageManager->read($imageLocation);
     }
 }

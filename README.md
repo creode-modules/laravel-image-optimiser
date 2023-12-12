@@ -7,6 +7,14 @@ Package can be installed on a Laravel Project via composer.
 composer require creode/laravel-image-optimiser
 ```
 
+## Versions
+This package utilises the Intervention Image Library behind the scenes and attempts to keep up to date with it. The following table shows the versions of the package and the versions of the Intervention Image Library that they use.
+
+| Package Version | Intervention Version |
+| --------------- | -------------------- |
+| 1.0.*           | 2.7.*                |
+| 2.0.*           | 3.*                  |
+
 ## Configuration
 The package can be configured by publishing the config file.
 
