@@ -15,6 +15,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Driver Class
+    |--------------------------------------------------------------------------
+    |
+    | The class to be used with Intervention image as a driver.
+    |
+    | Intervention\Image\Drivers\Gd\Driver::class
+    | Intervention\Image\Drivers\Imagick\Driver
+    | Intervention\Image\Interfaces\DriverInterface
+    |
+    */
+    'driver_class' => Intervention\Image\Drivers\Gd\Driver::class,
+
+    /*
+    |--------------------------------------------------------------------------
     | Presets
     |--------------------------------------------------------------------------
     |
@@ -56,6 +70,17 @@ return [
     'allowed_locations' => [
         '/storage', // Default Public Location for Laravel.
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cache Driver
+    |--------------------------------------------------------------------------
+    |
+    | Cache Driver to be used when caching the optimised images. If null, the
+    | default cache driver will be used.
+    |
+    */
+    'cache_driver' => null,
 
     /*
     |--------------------------------------------------------------------------
