@@ -55,6 +55,12 @@ class OptimiseController extends Controller
             abort(404);
         }
 
+        // If the image is an SVG, skip optimising it and just return the original.
+        if (pathinfo($data[$urlKey], PATHINFO_EXTENSION) === 'svg') {
+            return response(file_get_contents($data[$urlKey]), 200)
+                ->header('Content-Type', 'image/svg+xml');
+        }
+
         // Load in the preset for optimisation.
         try {
             $preset = $this->presetLoader->get($data['preset']);
