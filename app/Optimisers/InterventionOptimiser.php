@@ -5,9 +5,10 @@ namespace Modules\ImageOptimiser\app\Optimisers;
 use Illuminate\Http\Response;
 use Intervention\Image\EncodedImage;
 use Intervention\Image\ImageManager;
-use Intervention\Image\Interfaces\ImageInterface;
 use Modules\ImageOptimiser\app\Presets\Preset;
+use Intervention\Image\Interfaces\ImageInterface;
 use Modules\ImageOptimiser\app\Concerns\OptimiserInterface;
+use Modules\ImageOptimiser\app\Exceptions\CannotProcessImageException;
 
 class InterventionOptimiser implements OptimiserInterface
 {
@@ -26,17 +27,17 @@ class InterventionOptimiser implements OptimiserInterface
     protected $preset;
 
     /**
-     * Optimises the Image.
-     *
-     * @param string $imageLocation The URL or relative location of the image to optimise.
-     * @param \Modules\ImageOptimiser\app\Presets\Preset $preset The preset to use for optimisation.
-     *
-     * @return \Illuminate\Http\Response The URL of the optimised image.
+     * {@inheritdoc}
      */
     public function optimise(string $imageLocation, Preset $preset): Response
     {
         $imageLocation = $this->processLocation($imageLocation);
-        $image = $this->getOptimisedImage($imageLocation, $preset);
+        try {
+            $image = $this->getOptimisedImage($imageLocation, $preset);
+        } catch (\Exception $e) {
+            // If the image cannot be processed, return the original image.
+            throw new CannotProcessImageException('The image could not be processed.');
+        }
 
         return (new \Illuminate\Http\Response($image))->header('Content-Type', 'image/webp');
     }
@@ -63,6 +64,7 @@ class InterventionOptimiser implements OptimiserInterface
      *
      * @param string $imageLocation
      * @param Preset $preset
+     * @throws CannotProcessImageException
      *
      * @return EncodedImage
      */
