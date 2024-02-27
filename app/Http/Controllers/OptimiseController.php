@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\URL;
 use Modules\ImageOptimiser\app\Facades\Optimiser;
 use Modules\ImageOptimiser\app\Presets\PresetLoader;
 use Modules\ImageOptimiser\app\Exceptions\PresetNotFoundException;
+use Modules\ImageOptimiser\app\Exceptions\CannotProcessImageException;
 
 class OptimiseController extends Controller
 {
@@ -68,7 +69,11 @@ class OptimiseController extends Controller
             abort(404);
         }
 
-        // Return the optimised image in a response.
-        return Optimiser::optimise($data[$urlKey], $preset);
+        try {
+            // Optimise the image.
+            return Optimiser::optimise($data[$urlKey], $preset);
+        } catch (CannotProcessImageException $e) {
+            abort(404);
+        }
     }
 }
